@@ -1,0 +1,12 @@
+{
+  "name": "isegoria-core",
+  "version": "0.1.0",
+  "dependencies": [
+    "nlohmann-json",
+    "spdlog",
+    "jwt-cpp",
+    "curl",
+    "asio"
+  ],
+  "builtin-baseline": "8defa4b8bc4c35071c678e87a0e140dd433489bb"
+}
