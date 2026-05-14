@@ -21,7 +21,7 @@ file(GLOB_RECURSE SOURCES CONFIGURE_DEPENDS
 
 list(FILTER SOURCES EXCLUDE REGEX ".*/out/.*")
 
-add_executable (isegoria-core ${SOURCES})
+add_executable (isegoria-core ${SOURCES} "auth/JwtVerifier.cpp" "network/Session.cpp" "network/SessionManager.cpp")
 
 target_include_directories(isegoria-core PRIVATE .)
 
