@@ -13,7 +13,13 @@ find_package(nlohmann_json CONFIG REQUIRED)
 find_package(spdlog CONFIG REQUIRED)
 find_package(jwt-cpp CONFIG REQUIRED)
 
-add_executable (isegoria-core "isegoria-core.cpp" "isegoria-core.h")
+file(GLOB_RECURSE SOURCES CONFIGURE_DEPENDS
+    "*.cpp"
+    "*.h"
+    "*.hpp"
+)
+
+add_executable (isegoria-core ${SOURCES})
 
 target_include_directories(isegoria-core PRIVATE .)
 
