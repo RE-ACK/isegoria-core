@@ -19,6 +19,8 @@ file(GLOB_RECURSE SOURCES CONFIGURE_DEPENDS
     "*.hpp"
 )
 
+list(FILTER SOURCES EXCLUDE REGEX ".*/out/.*")
+
 add_executable (isegoria-core ${SOURCES})
 
 target_include_directories(isegoria-core PRIVATE .)
@@ -34,7 +36,6 @@ target_link_libraries(isegoria-core PRIVATE
 )
 
 target_compile_definitions(isegoria-core PRIVATE
-    ASIO_STANDALONE
     _WIN32_WINNT=0x0601
 )
 
