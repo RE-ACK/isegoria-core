@@ -1,0 +1,24 @@
+version: '3.8'
+
+services:
+  isegoria-server:
+    # 1. 빌드 규칙 설정: 현재 폴더(.)에 있는 Dockerfile을 기반으로 이미지를 만듬
+    build:
+      context: .
+      dockerfile: Dockerfile
+    
+    # 컨테이너 구동 시 표시될 이름
+    container_name: isegoria-core-service
+    
+    # 2. 포트 매핑 (외부 접근 포트 : 컨테이너 내부 포트)
+    ports:
+      - "8080:8080"
+    
+    # 3. 환경 변수 파일 주입
+    # 프로젝트 루트에 있는 .env 파일을 읽어와 컨테이너 OS 내부 환경 변수로 자동 주입합니다.
+    # 이 덕분에 C++ 소스 코드 내 std::getenv("JWT_SECRET")가 완벽하게 값을 읽어옵니다.
+    env_file:
+      - .env
+    
+    # 예기치 못한 에러로 서버가 다운되었을 때 자동으로 리스타트하는 옵션
+    restart: always

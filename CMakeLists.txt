@@ -37,6 +37,7 @@ target_link_libraries(isegoria-core PRIVATE
 
 target_compile_definitions(isegoria-core PRIVATE
     _WIN32_WINNT=0x0601
+    PROJECT_ROOT_DIR="${CMAKE_SOURCE_DIR}"
 )
 
 if (CMAKE_VERSION VERSION_GREATER 3.12)

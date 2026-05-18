@@ -1,18 +1,28 @@
-﻿// isegoria-core.cpp : 애플리케이션의 진입점을 정의합니다.
-//
-
-#include <iostream>
+﻿#include <iostream>
+#include <cstdlib>
+#include "utils/Env.hpp" // 직접 만든 헤더 포함
 #include "utils/Logger.hpp"
-
-
-using namespace std;
 
 int main() {
     Logger::init();
-
     LOG_INFO("Server Start");
-    LOG_WARN("WARNING TEST");
-    LOG_ERROR("ERROR TEST");
+
+    try {
+        Env::load();
+        LOG_INFO(".env file loaded successfully via custom Env class!");
+    }
+    catch (const std::exception& e) {
+        LOG_ERROR(".env load failed: {}", e.what());
+    }
+
+    const char* jwtSecret = std::getenv("JWT_SECRET");
+
+    if (jwtSecret) {
+        LOG_INFO("[SUCCESS] JWT_SECRET LOAD SUCCESS: {}", jwtSecret);
+    }
+    else {
+        LOG_ERROR("[FAIL] JWT_SECRET NOT FOUND");
+    }
 
     Logger::shutdown();
     return 0;
