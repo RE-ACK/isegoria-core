@@ -23,6 +23,7 @@ public:
     const std::array<uint8_t, 32>& getSessionToken() const { return _sessionToken; }
     asio::ip::udp::endpoint getUdpEndpoint() const { return _udpEndPoint; }
     std::chrono::steady_clock::time_point getLastPingAt() const { return _lastPingAt; }
+    asio::ip::tcp::socket& getSocket() { return _socket; }
 
     // Setter
     void setUserId(int64_t userId) { _userId = userId; }
