@@ -2,21 +2,27 @@
 #include "SessionManager.hpp"
 #include "utils/Logger.hpp"
 #include "protocol/PacketTypes.hpp"
-//#include "handler/AuthHandler.hpp"
-//#include "handler/ChatHandler.hpp"
-//#include "handler/VoiceHandler.hpp"
-//#include "handler/StatusHandler.hpp"
+#include "handler/AuthHandler.hpp"
+#include "handler/ChatHandler.hpp"
+#include "handler/VoiceHandler.hpp"
+#include "handler/StatusHandler.hpp"
 
 #include <unordered_map>
 
-using PacketHandler = std::function<void(std::shared_ptr<Session>, const nlohmann::json&)>();
+using PacketHandler = std::function<void(std::shared_ptr<Session>, const nlohmann::json&)>;
 
-// @TODO 핸들러 작성 완료되면 적용시켜야함.
-//std::unordered_map<std::string, PacketHandler> handlers = {
-//	{ PacketTypes::AUTH,       AuthHandler::handle },
-//	{ PacketTypes::JOIN_TEXT,  ChatHandler::handleJoin },
-//	{ PacketTypes::CHAT_MSG,   ChatHandler::handleMessage },
-//};
+const std::unordered_map<std::string, PacketHandler> handlers = {
+	{ PacketTypes::AUTH,        AuthHandler::handle },
+	{ PacketTypes::JOIN_TEXT,   ChatHandler::handleJoin },
+	{ PacketTypes::LEAVE_TEXT,  ChatHandler::handleLeave },
+	{ PacketTypes::CHAT_MSG,    ChatHandler::handleMessage },
+	{ PacketTypes::VOICE_JOIN,  VoiceHandler::handleJoin },
+	{ PacketTypes::VOICE_LEAVE, VoiceHandler::handleLeave },
+	{ PacketTypes::SET_MUTE,    VoiceHandler::handleMute },
+	{ PacketTypes::SET_DEAFEN,  VoiceHandler::handleDeafen },
+	{ PacketTypes::SET_STATUS,  StatusHandler::handleStatus },
+	{ PacketTypes::PING,        StatusHandler::handlePing }
+};
 
 Session::Session(asio::ip::tcp::socket socket)
 	: _socket(std::move(socket))
@@ -90,13 +96,13 @@ void Session::handlePacket(const std::string& raw) {
 		//else LOG_WARN("알 수 없는 패킷 타입: {}", type);
 
 		// @TODO 이방법이 더좋은듯
-		//auto it = handlers.find(type);
-		//if (it != handlers.end()) {
-		//	it->second(shared_from_this(), json);
-		//}
-		//else {
-		//	LOG_WARN("알 수 없는 패킷 타입: {}", type);
-		//}
+		auto it = handlers.find(type);
+		if (it != handlers.end()) {
+			it->second(shared_from_this(), json);
+		}
+		else {
+			LOG_WARN("알 수 없는 패킷 타입: {}", type);
+		}
 
 	}
 	catch (const std::exception& e) {
