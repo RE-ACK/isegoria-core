@@ -5,6 +5,7 @@
 #include <string>
 #include <array>
 #include <chrono>
+#include <unordered_set>
 
 class Session : public std::enable_shared_from_this<Session> {
 public:
@@ -35,6 +36,9 @@ public:
     void setSessionToken(const std::array<uint8_t, 32>& token) { _sessionToken = token; }
     void setUdpEndpoint(const asio::ip::udp::endpoint& ep) { _udpEndPoint = ep; }
     void updateLastPingAt() { _lastPingAt = std::chrono::steady_clock::now(); }
+    void addWatchedUser(int64_t userId) { _watchedUserIds.insert(userId); }
+    void clearWatchedUsers() { _watchedUserIds.clear(); }
+    bool isWatching(int64_t userId) const { return _watchedUserIds.count(userId) > 0; }
 
 
 private:
@@ -55,6 +59,7 @@ private:
 	std::array<uint8_t, 32> _sessionToken{};
 	asio::ip::udp::endpoint _udpEndPoint;
 	std::chrono::steady_clock::time_point _lastPingAt;
+	std::unordered_set<int64_t> _watchedUserIds;
 
 	std::vector<uint8_t> _readBuf;
 };

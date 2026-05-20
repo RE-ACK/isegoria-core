@@ -24,6 +24,8 @@ namespace PacketTypes {
     // 유저 상태
     constexpr const char* USER_STATE = "USER_STATE";
     constexpr const char* SET_STATUS = "SET_STATUS";
+    constexpr const char* SUBSCRIBE_STATUS = "SUBSCRIBE_STATUS";
+    constexpr const char* SUBSCRIBE_STATUS_OK = "SUBSCRIBE_STATUS_OK";
 
     // 메시지
     constexpr const char* MSG_DELETED = "MSG_DELETED";

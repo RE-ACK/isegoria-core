@@ -22,6 +22,7 @@ const std::unordered_map<std::string, PacketHandler> handlers = {
 	{ PacketTypes::SET_MUTE,    VoiceHandler::handleMute },
 	{ PacketTypes::SET_DEAFEN,  VoiceHandler::handleDeafen },
 	{ PacketTypes::SET_STATUS,  StatusHandler::handleStatus },
+	{ PacketTypes::SUBSCRIBE_STATUS, StatusHandler::handleSubscribe },
 	{ PacketTypes::PING,        StatusHandler::handlePing }
 };
 
@@ -134,6 +135,21 @@ void Session::sendPacket(const nlohmann::json& json) {
 void Session::disconnect() {
 	LOG_INFO("Session Exit: userId = {}", _userId);
 	_socket.close();
+
+	if (_userId != 0) {
+		nlohmann::json offline;
+		offline["type"] = PacketTypes::USER_STATE;
+		offline["userId"] = _userId;
+		offline["status"] = "OFFLINE";
+		auto all = SessionManager::getInstance().getAll();
+		for (auto& s : all) {
+			if (s->getUserId() == _userId) continue;
+			if (s->isWatching(_userId)) {
+				s->sendPacket(offline);
+			}
+		}
+	}
+
 	SessionManager::getInstance().remove(_userId);
 	RoomManager::getInstance().removeUserFromAll(_userId);
 }

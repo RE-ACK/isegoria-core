@@ -84,6 +84,8 @@ void AuthHandler::broadcastOnline(std::shared_ptr<Session> session) {
 	for (auto& s : all) {
 		if (s->getUserId() == session->getUserId())
 			continue;
-		s->sendPacket(stateMsg);
+		if (s->isWatching(session->getUserId())) {
+			s->sendPacket(stateMsg);
+		}
 	}
 }
