@@ -14,7 +14,10 @@ bool JwtVerifier::verify(const std::string& token, JwtClaims& outClaims) {
 
 		verifier.verify(decoded);
 
-		outClaims.userId = decoded.get_payload_claim("userId").as_integer();
+		//outClaims.userId = decoded.get_payload_claim("sub").as_integer();
+
+		std::string subStr = decoded.get_payload_claim("sub").as_string();
+		outClaims.userId = std::stoll(subStr);
 
 		return true;
 	}

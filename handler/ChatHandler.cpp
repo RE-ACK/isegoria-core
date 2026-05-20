@@ -29,6 +29,12 @@ void ChatHandler::handleMessage(std::shared_ptr<Session> session, const nlohmann
     if (!json.contains("content")) return;
 
     std::string content = json["content"].get<std::string>();
+    uint64_t serverId = json["serverId"].get<uint64_t>();
+    std::string userName = json["userName"].get<std::string>();
+    std::string avatarUrl = "";
+    if (json.contains("avatarUrl") && !json["avatarUrl"].is_null()) {
+        avatarUrl = json["avatarUrl"].get<std::string>();
+    }
 
     // 4KB 초과 시 세션 강제 종료
     if (content.size() > MAX_MESSAGE_SIZE) {
@@ -46,6 +52,8 @@ void ChatHandler::handleMessage(std::shared_ptr<Session> session, const nlohmann
     nlohmann::json broadcast;
     broadcast["type"] = PacketTypes::CHAT_MSG;
     broadcast["userId"] = session->getUserId();
+    broadcast["userName"] = userName;
+    broadcast["avatarUrl"] = avatarUrl;
     broadcast["channelId"] = channelId;
     broadcast["content"] = content;
 
@@ -54,9 +62,8 @@ void ChatHandler::handleMessage(std::shared_ptr<Session> session, const nlohmann
         member->sendPacket(broadcast);
     }
 
-
     // SpringClient로 메시지 저장 콜백
-    SpringClient::getInstance().postMessage(channelId, session->getUserId(), content);
+    //SpringClient::getInstance().postMessage(serverId, channelId, session->getUserId(), content);
 
     LOG_INFO("MESSAGE BROADCAST : userId={}, channelId={}", session->getUserId(), channelId);
 }

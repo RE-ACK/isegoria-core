@@ -1,5 +1,6 @@
 #include "Session.hpp"
 #include "SessionManager.hpp"
+#include "room/RoomManager.hpp"
 #include "utils/Logger.hpp"
 #include "protocol/PacketTypes.hpp"
 #include "handler/AuthHandler.hpp"
@@ -134,4 +135,5 @@ void Session::disconnect() {
 	LOG_INFO("Session Exit: userId = {}", _userId);
 	_socket.close();
 	SessionManager::getInstance().remove(_userId);
+	RoomManager::getInstance().removeUserFromAll(_userId);
 }

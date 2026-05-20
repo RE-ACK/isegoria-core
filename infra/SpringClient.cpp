@@ -33,7 +33,7 @@ std::string SpringClient::post(const std::string& endpoint, const std::string& b
 
 	struct curl_slist* headers = nullptr;
 	headers = curl_slist_append(headers, "Content-Type: application/json");
-	std::string apiKeyHeader = "Internal-Api-Key: " + _apiKey;
+	std::string apiKeyHeader = "X-Internal-API-Key: " + _apiKey;
 	headers = curl_slist_append(headers, apiKeyHeader.c_str());
 
 	curl_easy_setopt(curl, CURLOPT_URL, url.c_str());
@@ -61,7 +61,7 @@ std::string SpringClient::get(const std::string& endpoint) {
 	if (!curl) return "";
 
 	struct curl_slist* headers = nullptr;
-	std::string apiKeyHeader = "Internal-Api-Key: " + _apiKey;
+	std::string apiKeyHeader = "X-Internal-API-Key: " + _apiKey;
 	headers = curl_slist_append(headers, apiKeyHeader.c_str());
 
 	curl_easy_setopt(curl, CURLOPT_URL, url.c_str());
@@ -80,12 +80,13 @@ std::string SpringClient::get(const std::string& endpoint) {
 	return response;
 }
 
-void SpringClient::postMessage(int64_t channelId, int64_t userId, const std::string& content) {
+void SpringClient::postMessage(int64_t serverId, int64_t channelId, int64_t userId, const std::string& content) {
 	nlohmann::json body;
+	//body["serverId"] = serverId;
 	body["channelId"] = channelId;
-	body["userId"] = userId;
+	body["senderId"] = userId;
 	body["content"] = content;
-	post("/api/internal/messages", body.dump());
+	post("/api/messages/create", body.dump());
 }
 
 void SpringClient::postKick(int64_t userId, int64_t guildId) {

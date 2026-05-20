@@ -18,7 +18,7 @@ public:
 
 	void init();
 
-	void postMessage(int64_t channelId, int64_t userId, const std::string& content);
+	void postMessage(int64_t serverid, int64_t channelId, int64_t userId, const std::string& content);
 	void postKick(int64_t userId, int64_t guildId);
 	void postMessageDelete(int64_t messageId, int64_t channelId);
 	std::vector<ChannelInfo> getChannels();
