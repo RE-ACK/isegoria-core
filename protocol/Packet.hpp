@@ -5,7 +5,7 @@
 #pragma pack(push, 1)
 struct VoiceHeader {
 	uint8_t sessionToken[32]; // UDP 인증
-	uint8_t channelId; // 8 byte
+	uint64_t channelId; // 8 byte
 	uint32_t sequenceNum; // 4 byte (Jitter Buffer 정렬용)
 	uint32_t timestamp; // 4 byte (밀리초)
 };

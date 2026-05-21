@@ -2,6 +2,9 @@
 #include "RoomManager.hpp"
 #include "network/Session.hpp"
 #include "utils/Logger.hpp"
+#include <memory>
+#include <vector>
+#include <cstring>
 
 void VoiceRouter::route(
 	asio::ip::udp::socket& socket,
@@ -26,9 +29,15 @@ void VoiceRouter::route(
 		if (endpoint.port() == 0)
 			continue;
 
+		auto bufferCopy = std::make_shared<std::vector<uint8_t>>(data, data + size);
+		std::memcpy(bufferCopy->data(), &senderUserId, sizeof(int64_t));
+
+		LOG_INFO("[VOICE BROADCAST] fromUserId={} toUserId={} channelId={} byteSize={} ptr={}",
+			senderUserId, session->getUserId(), channelId, size, static_cast<const void*>(data));
+
 		socket.async_send_to(
-			asio::buffer(data, size), endpoint,
-			[](std::error_code ec, std::size_t) {
+			asio::buffer(*bufferCopy), endpoint,
+			[bufferCopy](std::error_code ec, std::size_t) {
 				if (ec) {
 					LOG_WARN("UDP SEND FAIL : {}", ec.message());
 				}

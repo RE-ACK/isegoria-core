@@ -55,6 +55,8 @@ void UDPListener::receive() {
 					session->getUserId(),
 					header.channelId
 				);
+
+				LOG_INFO("오긴오냐");
 			}
 			else {
 				LOG_ERROR("[UDPLISTENER] RECEIVE ERROR: {}", ec.message());

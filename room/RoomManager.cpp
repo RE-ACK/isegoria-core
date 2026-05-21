@@ -30,7 +30,7 @@ bool RoomManager::joinVoiceChannel(int64_t userId, uint64_t channelId) {
 void RoomManager::leaveVoiceChannel(int64_t userId, uint64_t channelId) {
 	std::lock_guard<std::mutex> lock(_mutex);
 
-	auto it = _voiceChannelMap.find(userId);
+	auto it = _voiceChannelMap.find(channelId);
 	if (it != _voiceChannelMap.end()) {
 		it->second.erase(userId);
 	}

@@ -62,9 +62,7 @@ void AuthHandler::handle(std::shared_ptr<Session> session, const nlohmann::json&
 	// AUTH_OK 응답 (sessionToken 포함)
 	nlohmann::json response;
 	response["type"] = PacketTypes::AUTH_OK;
-	response["sessionToken"] = nlohmann::json::binary(
-		std::vector<uint8_t>(sessionToken.begin(), sessionToken.end())
-	);
+	response["sessionToken"] = std::vector<uint8_t>(sessionToken.begin(), sessionToken.end());
 	session->sendPacket(response);
 
 

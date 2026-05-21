@@ -25,13 +25,26 @@ void VoiceHandler::handleJoin(std::shared_ptr<Session> session, const nlohmann::
 	session->setUdpEndpoint(udpEndpoint);
 	session->setVoiceChannelId(channelId);
 
+	auto members = RoomManager::getInstance().getVoiceChannelMembers(channelId);
+
+	// 기존 채널 멤버들의 상태를 신규 입장 세션에게 전달
+	for (auto& member : members) {
+		if (member->getUserId() == session->getUserId())
+			continue;
+		nlohmann::json existingState;
+		existingState["type"] = PacketTypes::VOICE_STATE;
+		existingState["userId"] = member->getUserId();
+		existingState["channelId"] = channelId;
+		existingState["joined"] = true;
+		session->sendPacket(existingState);
+	}
+
 	nlohmann::json broadcast;
 	broadcast["type"] = PacketTypes::VOICE_STATE;
 	broadcast["userId"] = session->getUserId();
 	broadcast["channelId"] = channelId;
 	broadcast["joined"] = true;
 
-	auto members = RoomManager::getInstance().getVoiceChannelMembers(channelId);
 	for (auto& member : members) {
 		member->sendPacket(broadcast);
 	}
