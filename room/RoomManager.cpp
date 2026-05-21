@@ -88,3 +88,9 @@ void RoomManager::removeUserFromAll(int64_t userId) {
 		members.erase(userId);
 	}
 }
+
+std::unordered_map<uint64_t, std::unordered_set<uint64_t>> RoomManager::getAllVoiceChannels()
+{
+	std::lock_guard<std::mutex> lock(_mutex);
+	return _voiceChannelMap;
+}

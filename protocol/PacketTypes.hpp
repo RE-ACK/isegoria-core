@@ -17,6 +17,9 @@ namespace PacketTypes {
     constexpr const char* VOICE_FULL = "VOICE_FULL";
     constexpr const char* VOICE_STATE = "VOICE_STATE";
 
+    constexpr const char* VOICE_USERS_REQUEST = "VOICE_USERS_REQUEST";
+    constexpr const char* VOICE_USERS = "VOICE_USERS";
+
     // 음소거 / 귀막기
     constexpr const char* SET_MUTE = "SET_MUTE";
     constexpr const char* SET_DEAFEN = "SET_DEAFEN";

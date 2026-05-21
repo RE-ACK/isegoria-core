@@ -23,7 +23,8 @@ const std::unordered_map<std::string, PacketHandler> handlers = {
 	{ PacketTypes::SET_DEAFEN,  VoiceHandler::handleDeafen },
 	{ PacketTypes::SET_STATUS,  StatusHandler::handleStatus },
 	{ PacketTypes::SUBSCRIBE_STATUS, StatusHandler::handleSubscribe },
-	{ PacketTypes::PING,        StatusHandler::handlePing }
+	{ PacketTypes::PING,        StatusHandler::handlePing },
+	{ PacketTypes::VOICE_USERS_REQUEST, VoiceHandler::handleVoiceUsersRequest },
 };
 
 Session::Session(asio::ip::tcp::socket socket)

@@ -24,6 +24,7 @@ public:
 
 	std::vector<std::shared_ptr<Session>> getTextChannelMembers(uint64_t channelId);
 	std::vector<std::shared_ptr<Session>> getVoiceChannelMembers(uint64_t channelId);
+	std::unordered_map<uint64_t, std::unordered_set<uint64_t>> getAllVoiceChannels();
 
 	// 연결 끊길때 호출
 	void removeUserFromAll(int64_t userId);

@@ -45,8 +45,11 @@ void VoiceHandler::handleJoin(std::shared_ptr<Session> session, const nlohmann::
 	broadcast["channelId"] = channelId;
 	broadcast["joined"] = true;
 
-	for (auto& member : members) {
-		member->sendPacket(broadcast);
+	auto all = SessionManager::getInstance().getAll();
+	//for (auto& member : members) {
+	for(auto& s : all){
+		if(s->isWatching(session->getUserId()))
+			s->sendPacket(broadcast);
 	}
 
 	LOG_INFO("ENTER VOICE CHANNEL : userId={}, channelId={}", session->getUserId(), channelId);
@@ -67,12 +70,42 @@ void VoiceHandler::handleLeave(std::shared_ptr<Session> session, const nlohmann:
 	broadcast["channelId"] = channelId;
 	broadcast["joined"] = false;
 
-	auto members = RoomManager::getInstance().getVoiceChannelMembers(channelId);
-	for (auto& member : members) {
-		member->sendPacket(broadcast);
+	//auto members = RoomManager::getInstance().getVoiceChannelMembers(channelId);
+	auto all = SessionManager::getInstance().getAll();
+	//for (auto& member : members) {
+	for(auto& s : all){
+		if(s->isWatching(session->getUserId()))
+			s->sendPacket(broadcast);
 	}
 
 	LOG_INFO("LEAVE VOICE CHANNEL : userId={}, channelId={}", session->getUserId(), channelId);
+}
+
+void VoiceHandler::handleVoiceUsersRequest(
+	std::shared_ptr<Session> session,
+	const nlohmann::json& json)
+{
+	auto& rm = RoomManager::getInstance();
+
+	auto voiceChannels = rm.getAllVoiceChannels();
+
+	for (auto& [channelId, members] : voiceChannels)
+	{
+		nlohmann::json packet;
+		packet["type"] = PacketTypes::VOICE_USERS;
+		packet["channelId"] = channelId;
+
+		nlohmann::json users = nlohmann::json::array();
+
+		for (auto userId : members)
+		{
+			users.push_back(userId);
+		}
+
+		packet["users"] = users;
+
+		session->sendPacket(packet);
+	}
 }
 
 void VoiceHandler::handleMute(std::shared_ptr<Session> session, const nlohmann::json& json) {
