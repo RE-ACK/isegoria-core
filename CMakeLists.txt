@@ -19,7 +19,9 @@ file(GLOB_RECURSE SOURCES CONFIGURE_DEPENDS
     "*.hpp"
 )
 
-add_executable (isegoria-core ${SOURCES})
+list(FILTER SOURCES EXCLUDE REGEX ".*/out/.*")
+
+add_executable (isegoria-core ${SOURCES} "auth/JwtVerifier.cpp" "network/Session.cpp" "network/SessionManager.cpp" "room/RoomManager.cpp" "room/VoiceRouter.cpp" "handler/AuthHandler.cpp" "handler/ChatHandler.cpp" "handler/VoiceHandler.cpp" "handler/StatusHandler.cpp" "infra/SpringClient.cpp" "heartbeat/HeartbeatManager.cpp" "network/TCPListener.cpp" "network/UDPListener.cpp")
 
 target_include_directories(isegoria-core PRIVATE .)
 
@@ -34,8 +36,8 @@ target_link_libraries(isegoria-core PRIVATE
 )
 
 target_compile_definitions(isegoria-core PRIVATE
-    ASIO_STANDALONE
     _WIN32_WINNT=0x0601
+    PROJECT_ROOT_DIR="${CMAKE_SOURCE_DIR}"
 )
 
 if (CMAKE_VERSION VERSION_GREATER 3.12)
